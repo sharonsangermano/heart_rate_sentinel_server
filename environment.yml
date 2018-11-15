@@ -1,0 +1,13 @@
+name: hrss2-test-environment
+dependencies:
+        - numpy
+        - sphinx
+        - pytest
+        - pytest-pep8
+        - pytest-cov
+        - flask
+        - ipython
+        - requests
+        - pip:
+            - gunicorn
+            - pymodm
