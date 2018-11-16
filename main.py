@@ -52,11 +52,13 @@ def main():
     hr_list = r4.json()
     print(hr_list)
 
-    r5 = requests.get("http://vcm-7307.vm.duke.edu:5000/api/heart_rate/average/1")
+    r5 = requests.get("http://vcm-7307.vm.duke.edu:5000/api/heart_rate/"
+                      "average/1")
     avg = r5.json()
     print(avg)
 
-    r6 = requests.post("http://vcm-7307.vm.duke.edu:5000/api/heart_rate/interval_average",
+    r6 = requests.post("http://vcm-7307.vm.duke.edu:5000/api/heart_rate"
+                       "/interval_average",
                        json={
                            "patient_id": 1,
                            "heart_rate_average_since": "2018-03-09 11:00:"
@@ -73,7 +75,8 @@ def main():
     hr_data = r7.json()
     print(hr_data)
 
-    r8 = requests.post("http://vcm-7307.vm.duke.edu:5000/api/heart_rate/interval_average",
+    r8 = requests.post("http://vcm-7307.vm.duke.edu:5000/api/heart_rate"
+                       "/interval_average",
                        json={
                            "patient_id": 3,
                            "heart_rate_average_since": "2018-03-09 11:00:"
@@ -90,15 +93,17 @@ def main():
     hr_list = r10.json()
     print(hr_list)
 
-    r11 = requests.get("http://vcm-7307.vm.duke.edu:5000/api/heart_rate/average/3")
+    r11 = requests.get("http://vcm-7307.vm.duke.edu:5000/api/heart_rate"
+                       "/average/3")
     avg = r11.json()
     print(avg)
 
-    r12 = requests.post("http://vcm-7307.vm.duke.edu:5000/api/new_patient", json={
+    r12 = requests.post("http://vcm-7307.vm.duke.edu:5000/api/new_patient",
+                        json={
                           "patient_id": 1,
                           "attending_email": "sharon.sangermano@duke.edu",
                           "user_age": 50,
-                      })
+                        })
     data = r12.json()
     print(data)
 
