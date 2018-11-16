@@ -2,6 +2,9 @@ from pymodm import connect, MongoModel, fields
 from datetime import datetime
 from flask import Flask, jsonify, request
 from validate_email import validate_email
+import sendgrid
+import os
+from sendgrid.helpers.mail import *
 connect("mongodb://user1:1cooluser@ds155653.mlab.com:55653/ses137_hrss")
 app = Flask(__name__)
 
@@ -129,20 +132,36 @@ def validate_hr_req(req):
     return True
 
 
+def alert_dr(alert_email, pid):
+    sg = sendgrid.SendGridAPIClient(apikey=os.environ.get('SENDGRID_API_KEY'))
+    from_email = Email("sharon.sangermano@duke.edu")
+    to_email = Email(alert_email)
+    subject = "Sending with SendGrid is Fun"
+    content = Content("text/plain", "Your patient, with patient_id: " +
+                      str(pid) + " has a heart rate registering as "
+                                 "tachycardic.")
+    mail = Mail(from_email, subject, to_email, content)
+    response = sg.client.mail.send.post(request_body=mail.get())
+    print(response.status_code)
+    print(response.body)
+    print(response.headers)
+    return 'email sent'
+
+
 @app.route("/api/new_patient", methods=["POST"])
 def new_patient():
     r = request.get_json()
     if validate_newp_req(r):
         pid = r["patient_id"]
-        email = r["attending_email"]
+        a_email = r["attending_email"]
         age = r["user_age"]
         try:
             User.objects.raw({"_id": pid}).first()
-            return jsonify('patient_id is already used.  Please try again'
+            return jsonify('Patient_id is already used.  Please try again'
                            ' with a new id.')
         except:
-            add_user(pid, email, age)
-            return jsonify(pid, email, age)
+            add_user(pid, a_email, age)
+            return jsonify(pid, a_email, age)
 
 
 @app.route("/api/heart_rate", methods=["POST"])
@@ -168,6 +187,10 @@ def get_status(patient_id):
         age = get_age(pid)
         hr = get_recent_hr(pid)
         tachy = is_tachy(age, hr)
+        if tachy == 'Tachycardic':
+            u6 = User.objects.raw({"_id": pid}).first()
+            a_email = u6.attending_email
+            alert_dr(a_email, pid)
         return jsonify(tachy)
 # RETURN MOST RECENT TIME STAMP
     except:
