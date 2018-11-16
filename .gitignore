@@ -3,3 +3,4 @@ __pycache__/
 .idea/
 .venv/.env/env/venv
 sendgrid.env
+_build/
