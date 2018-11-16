@@ -9,3 +9,4 @@ requests
 ipython
 gunicorn
 validate_email
+sendgrid

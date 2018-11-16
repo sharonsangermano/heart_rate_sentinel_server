@@ -1,4 +1,4 @@
-name: hrss3-test-environment
+name: hrss4-test-environment
 dependencies:
         - numpy
         - sphinx
@@ -12,3 +12,4 @@ dependencies:
             - gunicorn
             - pymodm
             - validate_email
+            - sendgrid
