@@ -12,7 +12,7 @@ def main():
     print(data)
 
     r2 = requests.post("http://127.0.0.1:5000/api/heart_rate",
-                      json={
+                       json={
                           "patient_id": 1,
                           "hr": 100,
                       })
@@ -30,6 +30,14 @@ def main():
     r5 = requests.get("http://127.0.0.1:5000/api/heart_rate/average/1")
     avg = r5.json()
     print(avg)
+
+    r6 = requests.post("http://127.0.0.1:5000/api/heart_rate/interval_average",
+                       json={
+                           "patient_id": 1,
+                           "heart_rate_average_since": "2018-03-09 11:00:36.372339"
+                       })
+    ave_since = r6.json()
+    print(ave_since)
 
 
 if __name__ == "__main__":
