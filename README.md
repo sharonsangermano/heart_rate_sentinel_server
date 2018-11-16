@@ -9,7 +9,7 @@ A simple centralized heart rate sentinel server. Receives POST requests from moc
 **test_server.py:** Unit testing for all server.py functions that are not covered by pymodm or flask
 
 ## Testing the server 
-The server can be run locally or on a virtual machine.  The server is currently running on a virtual machine (vcm-7307.vm.duke.edu) for testing purposes. 
+The server can be run locally or on a virtual machine using *$ python server.py*.  The server is currently running on a virtual machine (vcm-7307.vm.duke.edu) for testing purposes. 
 
 ## 
 [![Build Status](https://travis-ci.org/sharonsangermano/heart_rate_sentinel_server.svg?branch=master)](https://travis-ci.org/sharonsangermano/heart_rate_sentinel_server)

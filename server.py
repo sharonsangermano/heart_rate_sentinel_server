@@ -301,7 +301,7 @@ def alert_dr(alert_email, pid):
     sg = sendgrid.SendGridAPIClient(apikey=os.environ.get('SENDGRID_API_KEY'))
     from_email = Email("sharon.sangermano@duke.edu")
     to_email = Email(alert_email)
-    subject = "Sending with SendGrid is Fun"
+    subject = "Tachycardic Patient Detected"
     content = Content("text/plain", "Your patient with patient_id: " +
                       str(pid) + " has a heart rate registering as "
                                  "tachycardic.")
