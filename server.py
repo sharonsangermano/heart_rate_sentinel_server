@@ -1,13 +1,13 @@
 from pymodm import connect, MongoModel, fields
 from datetime import datetime
 from flask import Flask, jsonify, request
-connect("mongodb://user1:1cooluser@ds155653.mlab.com:55653/ses137bme590")
+connect("mongodb://user1:1cooluser@ds155653.mlab.com:55653/ses137_hrss")
 app = Flask(__name__)
 
 
 class User(MongoModel):
-    patient_id = fields.IntegerField()
-    attending_email = fields.EmailField(primary_key=True)
+    patient_id = fields.IntegerField(primary_key=True)
+    attending_email = fields.EmailField()
     user_age = fields.IntegerField()
     #hr = fields.ListField(fields=fields.IntegerField())
     hr = fields.ListField()
@@ -21,7 +21,7 @@ def add_user(pid_arg, email_arg, age_arg):
 
 
 def add_hr(pid_arg, hr_arg, time_arg):
-    u2 = User.objects.raw({"patient_id": pid_arg}).first()
+    u2 = User.objects.raw({"_id": pid_arg}).first()
     if u2.hr[0] is None:
         u2.hr[0] = hr_arg
         u2.rec_time[0] =time_arg
@@ -32,17 +32,17 @@ def add_hr(pid_arg, hr_arg, time_arg):
 
 
 def get_age(pid_arg):
-    u3 = User.objects.raw({"patient_id": pid_arg}).first()
+    u3 = User.objects.raw({"_id": pid_arg}).first()
     return u3.user_age
 
 
 def get_recent_hr(pid_arg):
-    u4 = User.objects.raw({"patient_id": pid_arg}).first()
+    u4 = User.objects.raw({"_id": pid_arg}).first()
     return u4.hr[-1]
 
 
 def get_hrs(pid_arg):
-    u5 = User.objects.raw({"patient_id": pid_arg}).first()
+    u5 = User.objects.raw({"_id": pid_arg}).first()
     return u5.hr
 
 def get_avg_hr(pid_arg):
@@ -55,10 +55,25 @@ def get_avg_hr(pid_arg):
     return avg_hr
 
 
-# def get_int_ave(pid_arg, int_arg):
-#     return "???"
-#
-#
+def get_int_ave(pid_arg, int_arg):
+    u6 = User.objects.raw({"_id": pid_arg}).first()
+    times = u6.rec_time
+    hrs = u6.hr
+    int_times, int_hr = [], []
+    x = 0
+    time_comp = datetime.strptime(int_arg, '%Y-%m-%d %H:%M:%S.%f')
+    while x < len(times):
+        if times[x] >= time_comp:
+            int_times.append(times[x])
+            int_hr.append(hrs[x])
+        x += 1
+    sum_hr = 0
+    for x in int_hr:
+        sum_hr = sum_hr + x
+    avg_hr = sum_hr/len(int_times)
+    return avg_hr
+
+
 def is_tachy(age, hr):
     # IF UNDER 1 --> too young throw error/warning
     tachy = False
@@ -80,7 +95,6 @@ def is_tachy(age, hr):
         return 'Tachycardic'
     else:
         return 'Non-Tachycardic'
-
 
 
 @app.route("/api/new_patient", methods=["POST"])
@@ -132,8 +146,12 @@ def get_average(patient_id):
     pid = int(patient_id)
     avg_hr = get_avg_hr(pid)
     return jsonify(avg_hr)
-#
-#
-# @app.route("/api/heart_rate/interval_average", methods=["POST"])
-# def get_int_average():
-#     return
+
+
+@app.route("/api/heart_rate/interval_average", methods=["POST"])
+def get_int_average():
+    r = request.get_json()
+    pid = r["patient_id"]
+    interval = r["heart_rate_average_since"]
+    int_ave = get_int_ave(pid, interval)
+    return jsonify(int_ave)
